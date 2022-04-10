@@ -375,6 +375,7 @@ int main(void)
         ProcessInput();
         if (Camera_WorkMode == JPEGStartSingleShot)
         {
+            // TODO: Handle JPEG capture
             if (start_shoot == JPEGStartSingleShot)
             {
                 start_shoot = 0;
@@ -388,6 +389,7 @@ int main(void)
         }
         else if (Camera_WorkMode == JPEGStartVideoStreaming)
         {
+            // TODO: Handle JPEG capture
             if (start_shoot == JPEGStartVideoStreaming)
             {
                 if (send_OK)
