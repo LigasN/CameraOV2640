@@ -50,3 +50,4 @@ void UART1_BulkOut(uint32_t, uint8_t*);
 #endif
 
 #endif /* __USART_H__ */
+

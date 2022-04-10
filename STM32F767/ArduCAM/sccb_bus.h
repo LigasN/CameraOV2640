@@ -6,13 +6,13 @@
 
 #define I2C_TIM 1
 
-#define SCL_Pin GPIO_Pin_8 // Was GPIO_Pin_10 for other board
-#define SDA_Pin GPIO_Pin_9 // Was GPIO_Pin_11 for other board
+#define SCL_Pin GPIO_PIN_8 // Was GPIO_Pin_10 for other board
+#define SDA_Pin GPIO_PIN_9 // Was GPIO_Pin_11 for other board
 
-#define SCCB_SIC_H() GPIO_SetBits(GPIOB, SCL_Pin)   // SCL H
-#define SCCB_SIC_L() GPIO_ResetBits(GPIOB, SCL_Pin) // SCL H
-#define SCCB_SID_H() GPIO_SetBits(GPIOB, SDA_Pin)   // SDA	H
-#define SCCB_SID_L() GPIO_ResetBits(GPIOB, SDA_Pin) // SDA	H
+#define SCCB_SIC_H() HAL_GPIO_WritePin(GPIOB, SCL_Pin, GPIO_PIN_SET)   // SCL H
+#define SCCB_SIC_L() HAL_GPIO_WritePin(GPIOB, SCL_Pin, GPIO_PIN_RESET) // SCL H
+#define SCCB_SID_H() HAL_GPIO_WritePin(GPIOB, SDA_Pin, GPIO_PIN_SET)   // SDA H
+#define SCCB_SID_L() HAL_GPIO_WritePin(GPIOB, SDA_Pin, GPIO_PIN_RESET) // SDA H
 
 #define SCCB_DATA_IN                                                           \
     {                                                                          \
@@ -24,7 +24,7 @@
         GPIOB->MODER &= 0XFF3FFFFF;                                            \
         GPIOB->MODER |= 0X00400000;                                            \
     }
-#define SCCB_SID_STATE GPIO_ReadInputDataBit(GPIOB, SDA_Pin)
+#define SCCB_SID_STATE HAL_GPIO_ReadPin(GPIOB, SDA_Pin)
 
 void sccb_bus_init(void);
 void sccb_bus_start(void);

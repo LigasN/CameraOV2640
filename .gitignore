@@ -133,6 +133,7 @@ desktop.ini
 *MDK-ARM/
 *EWARM/
 *Debug/
+*Release/
 # CrossWorks project files
 !*/*.hzp
 !*/*.hzs

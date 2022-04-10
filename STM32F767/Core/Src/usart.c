@@ -24,26 +24,6 @@
 uint8_t USART1_RecieveData = 0xff;
 uint8_t NewCMD             = 0;
 
-void UART1_BulkOut(uint32_t len, uint8_t* p)
-{
-    for (unsigned cnt = 0u; cnt != len; ++cnt)
-    {
-        while (USART_GetFlagStatus(USART3, USART_FLAG_TXE) == RESET)
-            ;
-        USART_SendData(USART3, *p);
-        p++;
-    }
-}
-
-void USART3_IRQHandler(void)
-{
-    if (USART_GetITStatus(USART3, USART_IT_RXNE) != RESET)
-    {
-        USART_ClearITPendingBit(USART1, USART_IT_RXNE);
-        USART_RecieveData = USART_ReceiveData(USART3);
-        NewCMD            = 1;
-    }
-}
 /* USER CODE END 0 */
 
 UART_HandleTypeDef huart3;
@@ -53,101 +33,109 @@ UART_HandleTypeDef huart3;
 void MX_USART3_UART_Init(void)
 {
 
-    /* USER CODE BEGIN USART3_Init 0 */
+  /* USER CODE BEGIN USART3_Init 0 */
 
-    /* USER CODE END USART3_Init 0 */
+  /* USER CODE END USART3_Init 0 */
 
-    /* USER CODE BEGIN USART3_Init 1 */
+  /* USER CODE BEGIN USART3_Init 1 */
 
-    /* USER CODE END USART3_Init 1 */
-    huart3.Instance                    = USART3;
-    huart3.Init.BaudRate               = 921600;
-    huart3.Init.WordLength             = UART_WORDLENGTH_8B;
-    huart3.Init.StopBits               = UART_STOPBITS_1;
-    huart3.Init.Parity                 = UART_PARITY_NONE;
-    huart3.Init.Mode                   = UART_MODE_TX_RX;
-    huart3.Init.HwFlowCtl              = UART_HWCONTROL_NONE;
-    huart3.Init.OverSampling           = UART_OVERSAMPLING_16;
-    huart3.Init.OneBitSampling         = UART_ONE_BIT_SAMPLE_DISABLE;
-    huart3.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
-    if (HAL_UART_Init(&huart3) != HAL_OK)
-    {
-        Error_Handler();
-    }
-    /* USER CODE BEGIN USART3_Init 2 */
+  /* USER CODE END USART3_Init 1 */
+  huart3.Instance = USART3;
+  huart3.Init.BaudRate = 921600;
+  huart3.Init.WordLength = UART_WORDLENGTH_8B;
+  huart3.Init.StopBits = UART_STOPBITS_1;
+  huart3.Init.Parity = UART_PARITY_NONE;
+  huart3.Init.Mode = UART_MODE_TX_RX;
+  huart3.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+  huart3.Init.OverSampling = UART_OVERSAMPLING_16;
+  huart3.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
+  huart3.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
+  if (HAL_UART_Init(&huart3) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN USART3_Init 2 */
 
-    /* USER CODE END USART3_Init 2 */
+  /* USER CODE END USART3_Init 2 */
+
 }
 
 void HAL_UART_MspInit(UART_HandleTypeDef* uartHandle)
 {
 
-    GPIO_InitTypeDef GPIO_InitStruct             = {0};
-    RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
-    if (uartHandle->Instance == USART3)
+  GPIO_InitTypeDef GPIO_InitStruct = {0};
+  RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
+  if(uartHandle->Instance==USART3)
+  {
+  /* USER CODE BEGIN USART3_MspInit 0 */
+
+  /* USER CODE END USART3_MspInit 0 */
+
+  /** Initializes the peripherals clock
+  */
+    PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_USART3;
+    PeriphClkInitStruct.Usart3ClockSelection = RCC_USART3CLKSOURCE_PCLK1;
+    if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
     {
-        /* USER CODE BEGIN USART3_MspInit 0 */
-
-        /* USER CODE END USART3_MspInit 0 */
-
-        /** Initializes the peripherals clock
-         */
-        PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_USART3;
-        PeriphClkInitStruct.Usart3ClockSelection = RCC_USART3CLKSOURCE_PCLK1;
-        if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
-        {
-            Error_Handler();
-        }
-
-        /* USART3 clock enable */
-        __HAL_RCC_USART3_CLK_ENABLE();
-
-        __HAL_RCC_GPIOD_CLK_ENABLE();
-        /**USART3 GPIO Configuration
-        PD8     ------> USART3_TX
-        PD9     ------> USART3_RX
-        */
-        GPIO_InitStruct.Pin       = STLK_RX_Pin | STLK_TX_Pin;
-        GPIO_InitStruct.Mode      = GPIO_MODE_AF_PP;
-        GPIO_InitStruct.Pull      = GPIO_NOPULL;
-        GPIO_InitStruct.Speed     = GPIO_SPEED_FREQ_VERY_HIGH;
-        GPIO_InitStruct.Alternate = GPIO_AF7_USART3;
-        HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
-
-        /* USART3 interrupt Init */
-        HAL_NVIC_SetPriority(USART3_IRQn, 0, 0);
-        HAL_NVIC_EnableIRQ(USART3_IRQn);
-        /* USER CODE BEGIN USART3_MspInit 1 */
-
-        /* USER CODE END USART3_MspInit 1 */
+      Error_Handler();
     }
+
+    /* USART3 clock enable */
+    __HAL_RCC_USART3_CLK_ENABLE();
+
+    __HAL_RCC_GPIOD_CLK_ENABLE();
+    /**USART3 GPIO Configuration
+    PD8     ------> USART3_TX
+    PD9     ------> USART3_RX
+    */
+    GPIO_InitStruct.Pin = STLK_RX_Pin|STLK_TX_Pin;
+    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+    GPIO_InitStruct.Alternate = GPIO_AF7_USART3;
+    HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
+
+    /* USART3 interrupt Init */
+    HAL_NVIC_SetPriority(USART3_IRQn, 0, 0);
+    HAL_NVIC_EnableIRQ(USART3_IRQn);
+  /* USER CODE BEGIN USART3_MspInit 1 */
+
+  /* USER CODE END USART3_MspInit 1 */
+  }
 }
 
 void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
 {
 
-    if (uartHandle->Instance == USART3)
-    {
-        /* USER CODE BEGIN USART3_MspDeInit 0 */
+  if(uartHandle->Instance==USART3)
+  {
+  /* USER CODE BEGIN USART3_MspDeInit 0 */
 
-        /* USER CODE END USART3_MspDeInit 0 */
-        /* Peripheral clock disable */
-        __HAL_RCC_USART3_CLK_DISABLE();
+  /* USER CODE END USART3_MspDeInit 0 */
+    /* Peripheral clock disable */
+    __HAL_RCC_USART3_CLK_DISABLE();
 
-        /**USART3 GPIO Configuration
-        PD8     ------> USART3_TX
-        PD9     ------> USART3_RX
-        */
-        HAL_GPIO_DeInit(GPIOD, STLK_RX_Pin | STLK_TX_Pin);
+    /**USART3 GPIO Configuration
+    PD8     ------> USART3_TX
+    PD9     ------> USART3_RX
+    */
+    HAL_GPIO_DeInit(GPIOD, STLK_RX_Pin|STLK_TX_Pin);
 
-        /* USART3 interrupt Deinit */
-        HAL_NVIC_DisableIRQ(USART3_IRQn);
-        /* USER CODE BEGIN USART3_MspDeInit 1 */
+    /* USART3 interrupt Deinit */
+    HAL_NVIC_DisableIRQ(USART3_IRQn);
+  /* USER CODE BEGIN USART3_MspDeInit 1 */
 
-        /* USER CODE END USART3_MspDeInit 1 */
-    }
+  /* USER CODE END USART3_MspDeInit 1 */
+  }
 }
 
 /* USER CODE BEGIN 1 */
 
+void UART1_BulkOut(uint32_t len, uint8_t* p)
+{
+    if (HAL_UART_Transmit_IT(&huart3, p, len) != HAL_OK)
+        return;
+}
+
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef* huart) { NewCMD = 1; }
 /* USER CODE END 1 */

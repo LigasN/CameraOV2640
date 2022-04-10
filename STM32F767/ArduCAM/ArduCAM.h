@@ -18,8 +18,8 @@ extern byte sensor_model;
 extern byte sensor_addr;
 extern uint32_t length;
 extern uint8_t is_header;
-#define BMP 0
-#define JPEG 1
+#define BMP_FORMAT 0
+#define JPEG_FORMAT 1
 
 #define OV7670 0
 #define MT9D111_A 1

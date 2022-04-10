@@ -33,6 +33,7 @@ extern "C" {
 /* USER CODE BEGIN Includes */
 #include "delay.h"
 #include "sccb_bus.h"
+#include "uart_printf.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/

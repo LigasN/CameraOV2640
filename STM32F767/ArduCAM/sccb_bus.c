@@ -9,16 +9,16 @@ uint32_t ntime;
 void sccb_bus_init(void)
 {
     GPIO_InitTypeDef GPIO_InitStructure;
-    RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOB, ENABLE);
-    GPIO_InitStructure.GPIO_Pin   = SDA_Pin;
-    GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_IN;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_40MHz;
-    GPIO_Init(GPIOB, &GPIO_InitStructure);
-    GPIO_SetBits(GPIOB, SDA_Pin);
-    GPIO_InitStructure.GPIO_Pin  = SCL_Pin;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-    GPIO_Init(GPIOB, &GPIO_InitStructure);
-    GPIO_SetBits(GPIOB, SCL_Pin);
+    __HAL_RCC_GPIOB_CLK_ENABLE();
+    GPIO_InitStructure.Pin   = SDA_Pin;
+    GPIO_InitStructure.Mode  = GPIO_MODE_AF_OD;
+    GPIO_InitStructure.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+    HAL_GPIO_Init(GPIOB, &GPIO_InitStructure);
+    HAL_GPIO_WritePin(GPIOB, SDA_Pin, GPIO_PIN_SET);
+    GPIO_InitStructure.Pin  = SCL_Pin;
+    GPIO_InitStructure.Mode = GPIO_MODE_AF_OD;
+    HAL_GPIO_Init(GPIOB, &GPIO_InitStructure);
+    HAL_GPIO_WritePin(GPIOB, SCL_Pin, GPIO_PIN_SET);
     SCCB_DATA_OUT;
 }
 

@@ -1,5 +1,5 @@
 #include "ArduCAM.h"
-//#include "spi.h"
+#include "capture.h"
 #include "sccb_bus.h"
 //#include "usart.h"
 #include "ov2640_regs.h"
@@ -8,7 +8,7 @@
 
 byte sensor_model = 0;
 byte sensor_addr  = 0;
-byte m_fmt        = JPEG;
+byte m_fmt        = JPEG_FORMAT;
 uint32_t length   = 0;
 uint8_t is_header = false;
 
@@ -22,7 +22,7 @@ void ArduCAM_Init()
         {
             wrSensorReg8_8(0xff, 0x01);
             wrSensorReg8_8(0x12, 0x80);
-            if (m_fmt == JPEG)
+            if (m_fmt == JPEG_FORMAT)
             {
                 wrSensorRegs8_8(OV2640_JPEG_INIT);
                 wrSensorRegs8_8(OV2640_YUV422);
@@ -39,7 +39,7 @@ void ArduCAM_Init()
         }
         case OV5640:
         {
-            if (m_fmt == JPEG)
+            if (m_fmt == JPEG_FORMAT)
             {
                 wrSensorReg16_8(0x3103, 0x11);
                 wrSensorReg16_8(0x3008, 0x82);
@@ -63,7 +63,7 @@ void ArduCAM_Init()
             wrSensorReg16_8(0x3008, 0x80);
             wrSensorRegs16_8(OV5642_QVGA_Preview);
 
-            if (m_fmt == JPEG)
+            if (m_fmt == JPEG_FORMAT)
             {
                 wrSensorRegs16_8(OV5642_JPEG_Capture_QSXGA);
                 wrSensorRegs16_8(ov5642_320x240);
@@ -124,30 +124,31 @@ void ArduCAM_Init()
 
 void set_format(byte fmt)
 {
-    if (fmt == BMP)
-        m_fmt = BMP;
+    if (fmt == BMP_FORMAT)
+        m_fmt = BMP_FORMAT;
     else
-        m_fmt = JPEG;
+        m_fmt = JPEG_FORMAT;
 }
 
 uint8_t bus_read(int address)
 {
-    uint8_t value;
-    CS_LOW();
-    SPI2_ReadWriteByte(address);
-    value = SPI2_ReadWriteByte(0x00);
-    CS_HIGH();
+    uint8_t value = 0;
+
+    /* CS_LOW();
+        SPI2_ReadWriteByte(address);
+        value = SPI2_ReadWriteByte(0x00);
+        CS_HIGH(); */
     return value;
 }
 
 uint8_t bus_write(int address, int value)
 {
-    CS_LOW();
+    /*CS_LOW();
     delay_us(10);
     SPI2_ReadWriteByte(address);
     SPI2_ReadWriteByte(value);
     delay_us(10);
-    CS_HIGH();
+    CS_HIGH();*/
     return 1;
 }
 
